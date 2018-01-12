@@ -1,9 +1,9 @@
 const axios=require('axios');
-// const getExchangeRate=(from,to)=>{
-// 	return axios.get(`https://api.fixer.io/latest?base=${from}`).then((response)=>{
-// 		return response.data.rates[to];
-// 		})
-// }
+const getExchangeRate=(from,to)=>{
+	return axios.get(`https://api.fixer.io/latest?base=${from}`).then((response)=>{
+		return response.data.rates[to];
+		})
+}
 const getExchangeRate=async (from,to)=>{
 	try{
 		const response=await axios.get(`https://api.fixer.io/latest?base=${from}`);
@@ -18,12 +18,12 @@ const getExchangeRate=async (from,to)=>{
 		throw new Error(`Unable to get exchanged rate for ${from} to ${to}`);
 	}
 	}
-// const getCountries=(currencyCode)=>{
-// 	return axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`).then((response)=>{
-// 		return response.data.map((country)=>country.name)
-// 	})
+const getCountries=(currencyCode)=>{
+	return axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`).then((response)=>{
+		return response.data.map((country)=>country.name)
+	})
 
-// }
+}
 const getCountries=async (currencyCode)=>{
 	try{
 		const response=await axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`);

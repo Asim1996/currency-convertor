@@ -1,9 +1,31 @@
+const yargs=require('yargs');
+const argv=yargs
+		.command('convert',"Base currency",{
+			from:{
+				describe:'Base Currency',
+				demand:true,
+				alias:'f'
+				},
+			to:{
+				describe:'Exhanged Currency',
+				demand:true,
+				alias:'t'
+			},
+			amount:{
+			describe:'Amount to be exchanged',
+				demand:true,
+				alias:'a',
+				default: 1	
+			}})
+ 		.help()
+		.argv;
+
+var command=argv._[0];
+const from =argv.f;
+const to=argv.t;
+const amount=argv.a;
+console.log(from,to,amount);
 const axios=require('axios');
-const getExchangeRate=(from,to)=>{
-	return axios.get(`https://api.fixer.io/latest?base=${from}`).then((response)=>{
-		return response.data.rates[to];
-		})
-}
 const getExchangeRate=async (from,to)=>{
 	try{
 		const response=await axios.get(`https://api.fixer.io/latest?base=${from}`);
@@ -18,12 +40,6 @@ const getExchangeRate=async (from,to)=>{
 		throw new Error(`Unable to get exchanged rate for ${from} to ${to}`);
 	}
 	}
-const getCountries=(currencyCode)=>{
-	return axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`).then((response)=>{
-		return response.data.map((country)=>country.name)
-	})
-
-}
 const getCountries=async (currencyCode)=>{
 	try{
 		const response=await axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`);
@@ -34,17 +50,6 @@ const getCountries=async (currencyCode)=>{
 
 	
 }
-
-const convertCurrency=(from,to,amount)=>{
-let countries;
-	return getCountries(to).then((tempCountries)=>{
-		countries=tempCountries;
-		return getExchangeRate(from,to).then((rate)=>{
-			const exchangeamount=rate*amount;
-			return `${amount} ${from} is worth ${exchangeamount} ${to}.${to} can be used in the following countries:${countries.join(', ')}`
-		})
-	})
-}
 const convertCurrencyAlt=async (from,to,amount)=>{
 	const countries=await getCountries(to);
 	const rate=await getExchangeRate(from,to);
@@ -52,11 +57,35 @@ const convertCurrencyAlt=async (from,to,amount)=>{
 			return `${amount} ${from} is worth ${exchangeamount} ${to}.${to} can be used in the following countries:${countries.join(', ')}`	
 
 }
-convertCurrencyAlt('USD','CAD',100).then((status)=>{
+convertCurrencyAlt(from,to,amount).then((status)=>{
 	console.log(status);
 }).catch((e)=>{
 	console.log(e.message);
 })
-convertCurrency('INR','USD',100).then((status)=>{
-	console.log(status);
-})
+
+
+// USING PROMISES
+// const getExchangeRate=(from,to)=>{
+// 	return axios.get(`https://api.fixer.io/latest?base=${from}`).then((response)=>{
+// 		return response.data.rates[to];
+// 		})
+// }
+// const getCountries=(currencyCode)=>{
+// 	return axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`).then((response)=>{
+// 		return response.data.map((country)=>country.name)
+// 	})
+
+// }
+// const convertCurrency=(from,to,amount)=>{
+// let countries;
+// 	return getCountries(to).then((tempCountries)=>{
+// 		countries=tempCountries;
+// 		return getExchangeRate(from,to).then((rate)=>{
+// 			const exchangeamount=rate*amount;
+// 			return `${amount} ${from} is worth ${exchangeamount} ${to}.${to} can be used in the following countries:${countries.join(', ')}`
+// 		})
+// 	})
+// }
+// convertCurrency('INR','USD',100).then((status)=>{
+// 	console.log(status);
+// })
